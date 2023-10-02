@@ -89,6 +89,7 @@ function compareValue(a, b) {
 // console.log(intersection([[5, 10, 15, 20], [15, 88, 1, 5, 7], [1, 10, 15, 5, 20]]));
 // should log: [5, 15]
 
+
 // Challenge 8
 function union(arrays) {
   const output = reduce(arrays, flatAndRemoveDuplicate, []);
@@ -237,21 +238,36 @@ function groupBy(array, callback) {
   return output;
 }
 
+// /*** Uncomment these to check your work! ***/
+// const decimals = [1.3, 2.1, 2.4];
+// const floored = function(num) { return Math.floor(num); };
+// console.log(groupBy(decimals, floored)); 
+// should log: { 1: [1.3], 2: [2.1, 2.4] }
+
 
 // Challenge 16
 function goodKeys(obj, callback) {
-
+  const output = [];
+  const keys = Object.keys(obj);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (callback(obj[key])) {
+      output.push(key);
+    }
+  }
+  return output;
 }
 
 // /*** Uncomment these to check your work! ***/
 // const sunny = { mac: 'priest', dennis: 'calculating', charlie: 'birdlaw', dee: 'bird', frank: 'warthog' };
 // const startsWithBird = function(str) { return str.slice(0, 4).toLowerCase() === 'bird'; };
-// console.log(goodKeys(sunny, startsWithBird)); // should log: ['charlie', 'dee']
+// console.log(goodKeys(sunny, startsWithBird)); 
+// should log: ['charlie', 'dee']
 
 
 // Challenge 17
 function commutative(func1, func2, value) {
-
+  return func2(func1(value)) === func1(func2(value));
 }
 
 // /*** Uncomment these to check your work! ***/
@@ -265,7 +281,16 @@ function commutative(func1, func2, value) {
 
 // Challenge 18
 function objFilter(obj, callback) {
-
+  const output = {};
+  const keys = Object.keys(obj);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i], value = obj[key];
+    const outputCB = callback(key);
+    if(outputCB === value) {
+      output[key] = value;
+    }
+  }
+  return output;
 }
 
 // /*** Uncomment these to check your work! ***/
@@ -279,7 +304,13 @@ function objFilter(obj, callback) {
 
 // Challenge 19
 function rating(arrOfFuncs, value) {
-
+  let trueCount = 0;
+  for (let i = 0; i < arrOfFuncs.length; i++) {
+    if (arrOfFuncs[i](value)) {
+      trueCount++;
+    }
+  }
+  return (trueCount / arrOfFuncs.length) * 100;
 }
 
 // /*** Uncomment these to check your work! ***/
@@ -293,8 +324,21 @@ function rating(arrOfFuncs, value) {
 
 
 // Challenge 20
-function pipe(arrOfFuncs, value) {
+// function pipe(arrOfFuncs, value) {
+// 	let output = arrOfFuncs[0](value);
+//   for (let i = 1; i < arrOfFuncs.length; i++) {
+// 		output = arrOfFuncs[i](output);
+//   }
+//   return output;
+// }
 
+function pipe(arrOfFuncs, value) {
+  if (arrOfFuncs.length === 0) {
+    return value;
+  }
+  const output = arrOfFuncs[0](value);
+  arrOfFuncs.shift();
+  return pipe(arrOfFuncs, output);
 }
 
 // /*** Uncomment these to check your work! ***/
@@ -307,7 +351,14 @@ function pipe(arrOfFuncs, value) {
 
 // Challenge 21
 function highestFunc(objOfFuncs, subject) {
-
+  const keys = Object.keys(objOfFuncs);
+  let largestNumberFunc = keys[0];
+  let largestNumber = objOfFuncs[keys[0]](subject);
+  for (let i = 1; i < keys.length; i++) {
+    const key = keys[i], output = objOfFuncs[key](subject);
+    largestNumberFunc = output >= largestNumber ? key : largestNumberFunc;
+  }
+  return largestNumberFunc;
 }
 
 // /*** Uncomment these to check your work! ***/
@@ -322,7 +373,12 @@ function highestFunc(objOfFuncs, subject) {
 
 // Challenge 22
 function combineOperations(startVal, arrOfFuncs) {
-
+  if (arrOfFuncs.length === 0) {
+    return startVal;
+  }
+  const output = arrOfFuncs[0](startVal);
+  arrOfFuncs.shift();
+  return combineOperations(output, arrOfFuncs);
 }
 
 function add100(num) {
@@ -337,14 +393,26 @@ function multiplyByThree(num) {
   return num * 3;
 }
 
+function multiplyByFive(num) {
+  return num * 5;
+}
+
+function addTen(num) {
+  return num + 10;
+}
 // /*** Uncomment these to check your work! ***/
 // console.log(combineOperations(0, [add100, divByFive, multiplyByThree])); // Should output 60 -->
-// console.log(combineOperations(0, [divByFive, multiplyFive, addTen])); // Should output 10
+// console.log(combineOperations(0, [divByFive, multiplyByFive, addTen])); // Should output 10
 
 
 // Challenge 23
 function myFunc(array, callback) {
-
+  for (let i = 0; i < array.length; i++) {
+    if (callback(array[i])) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 const numbers = [2, 3, 6, 64, 10, 8, 12];
@@ -361,7 +429,9 @@ function isOdd(num) {
 
 // Challenge 24
 function myForEach(array, callback) {
-
+  for (let i = 0; i < array.length; i++) {
+    callback(array[i]);
+  }
 }
 
 let sum = 0;
